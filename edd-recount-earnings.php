@@ -10,7 +10,8 @@ class EDD_Recount_Earnings {
 
 	public function __construct() {
 		add_action( 'edd_stats_meta_box', array( $this, 'stats_box_link' ) );
-		add_action( 'edd_tools_after', array( $this, 'tools_page' ) );
+		add_filter( 'edd_tools_tabs', array( $this, 'add_tab' ) );
+		add_action( 'edd_tools_tab_recount_earnings', array( $this, 'tools_page' ) );
 		add_action( 'edd_recount_earnings', array( $this, 'recount' ) );
 		add_action( 'edd_recount_store_earnings', array( $this, 'recount_store_earnings' ) );
 	}
@@ -33,13 +34,19 @@ class EDD_Recount_Earnings {
 		echo '</tr>';
 	}
 
+	public function add_tab( $tabs ) {
+		$tabs['recount_earnings'] = __( 'Recount Earnings', 'edd' );
+
+		return $tabs;
+	}
+
 	public function tools_page() {
 ?>
 	<div class="postbox">
 		<h3><span><?php _e( 'Recount Store Earnings', 'edd' ); ?></span></h3>
 		<div class="inside">
 			<p><?php _e( 'Use this tool to recount your store\'s total earnings in the case they have become incorrect.', 'edd' ); ?></p>
-			<form method="post" action="<?php echo admin_url( 'edit.php?post_type=download&page=edd-tools' ); ?>">
+			<form method="post" action="<?php echo admin_url( 'edit.php?post_type=download&page=edd-tools&tab=recount_earnings' ); ?>">
 				<p><input type="hidden" name="edd_action" value="recount_store_earnings" /></p>
 				<p>
 					<?php submit_button( __( 'Recount Earnings', 'edd' ), 'secondary', 'submit', false ); ?>
@@ -47,7 +54,7 @@ class EDD_Recount_Earnings {
 			</form>
 		</div><!-- .inside -->
 	</div><!-- .postbox -->
-<?php		
+<?php
 	}
 
 	public function recount() {
@@ -141,7 +148,7 @@ class EDD_Recount_Earnings {
 		// Store the total for the first time
 		update_option( 'edd_earnings_total', $total );
 
-		wp_redirect( admin_url( 'edit.php?post_type=download&page=edd-tools' ) ); exit;
+		wp_redirect( admin_url( 'edit.php?post_type=download&page=edd-tools&tab=recount_earnings' ) ); exit;
 
 	}
 
