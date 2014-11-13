@@ -111,6 +111,11 @@ class EDD_Recount_Earnings {
 			$payment_ids = $wpdb->get_col( "SELECT meta_value FROM $wpdb->postmeta WHERE meta_key='_edd_log_payment_id' AND post_id IN ($log_ids);" );
 
 			foreach ( $payment_ids as $payment_id ) {
+				$status = (string) $wpdb->get_var(  $wpdb->prepare( "SELECT post_status FROM $wpdb->posts WHERE ID = %d", $payment_id ) );
+				if ( 'publish' !== $status ) {
+					continue;
+				}
+
 				$items = edd_get_payment_meta_cart_details( $payment_id );
 				foreach ( $items as $item ) {
 					if ( $item['id'] != $download_id ) {
