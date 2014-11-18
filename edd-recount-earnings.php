@@ -108,10 +108,20 @@ class EDD_Recount_Earnings {
 
 		if ( $log_ids ) {
 			$log_ids     = implode( ',', $log_ids );
-			$payment_ids = $wpdb->get_col( "SELECT meta_value FROM $wpdb->postmeta WHERE meta_key='_edd_log_payment_id' AND post_id IN ($log_ids);" );
-
-			foreach ( $payment_ids as $payment_id ) {
-				$items = edd_get_payment_meta_cart_details( $payment_id );
+			$payment_ids = $wpdb->get_col( "SELECT meta_value FROM $wpdb->postmeta WHERE meta_key='_edd_log_payment_id' AND post_id IN ($log_ids)" );
+			unset( $log_ids );
+			
+			$payment_ids = implode( ',', $payment_ids );
+			$payments = $wpdb->get_results( "SELECT ID, post_status FROM $wpdb->posts WHERE ID IN (" . $payment_ids . ")" );
+			unset( $payment_ids );
+			
+			foreach ( $payments as $payment ) {
+				if ( in_array( $payment->post_status, array( 'revoked', 'published', 'edd_subscription' ) ) ) {
+					continue;
+				}
+		
+				$items = edd_get_payment_meta_cart_details( $payment->ID );
+		
 				foreach ( $items as $item ) {
 					if ( $item['id'] != $download_id ) {
 						continue;
