@@ -4,7 +4,7 @@
  * Plugin Name: Easy Digital Downloads - Recount Earnings
  * Description: Allows you to recalculate the earnings of products in EDD. Useful if product earnings get off somehow
  * Author: Pippin Williamson
- * Version: 1.0.1
+ * Version: 1.0.2
  */
 
 class EDD_Recount_Earnings {
