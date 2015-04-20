@@ -4,7 +4,7 @@
  * Plugin Name: Easy Digital Downloads - Recount Earnings
  * Description: Allows you to recalculate the earnings of products in EDD. Useful if product earnings get off somehow
  * Author: Pippin Williamson
- * Version: 1.0.2
+ * Version: 1.0.3
  */
 
 class EDD_Recount_Earnings {
@@ -36,7 +36,7 @@ class EDD_Recount_Earnings {
 
 		echo '<tr>';
 		echo '<td colspan="2">';
-		echo '<a href="' . add_query_arg( $args, $base_url ) . '">' . __( 'Recount Earnings', 'edd-recount-earnings' ) . '</a>';
+		echo '<a href="' . esc_url( add_query_arg( $args, $base_url ) ) . '">' . __( 'Recount Earnings', 'edd-recount-earnings' ) . '</a>';
 		echo '</td>';
 		echo '</tr>';
 	}
@@ -110,18 +110,18 @@ class EDD_Recount_Earnings {
 			$log_ids     = implode( ',', $log_ids );
 			$payment_ids = $wpdb->get_col( "SELECT meta_value FROM $wpdb->postmeta WHERE meta_key='_edd_log_payment_id' AND post_id IN ($log_ids)" );
 			unset( $log_ids );
-			
+
 			$payment_ids = implode( ',', $payment_ids );
 			$payments = $wpdb->get_results( "SELECT ID, post_status FROM $wpdb->posts WHERE ID IN (" . $payment_ids . ")" );
 			unset( $payment_ids );
-			
+
 			foreach ( $payments as $payment ) {
 				if ( in_array( $payment->post_status, array( 'revoked', 'published', 'edd_subscription' ) ) ) {
 					continue;
 				}
-		
+
 				$items = edd_get_payment_meta_cart_details( $payment->ID );
-		
+
 				foreach ( $items as $item ) {
 					if ( $item['id'] != $download_id ) {
 						continue;
@@ -146,7 +146,7 @@ class EDD_Recount_Earnings {
 
 		$base_url = admin_url( 'post.php' );
 
-		wp_redirect( add_query_arg( $args, $base_url ) );
+		wp_safe_redirect( add_query_arg( $args, $base_url ) );
 		exit;
 
 	}
