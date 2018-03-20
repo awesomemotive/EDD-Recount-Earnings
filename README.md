@@ -1,3 +1,7 @@
+# This repository is no longer maintained #
+Easy Digital Downloads now contains a full set of recount tools built directly into the 'Downloads > Tools' section:
+https://docs.easydigitaldownloads.com/article/1115-recount-stats
+
 EDD-Recount-Earnings
 ====================
 
